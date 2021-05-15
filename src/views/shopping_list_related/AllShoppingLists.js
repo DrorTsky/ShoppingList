@@ -93,8 +93,8 @@ export class AllShoppingLists extends Component {
     console.log("getting lists");
     try {
       let data = await ShoppingListService.getAllShoppingListsOfUser(
-        TEMP_NAME,
-        TEMP_EMAIL
+        this.props.user_name,
+        this.props.user_email
       );
       console.log(data.data);
       this.setState({
@@ -114,8 +114,8 @@ export class AllShoppingLists extends Component {
       all_shopping_lists.push(
         <ShoppingList
           key={list}
-          user_name={TEMP_NAME}
-          email={TEMP_EMAIL}
+          user_name={this.props.user_name}
+          email={this.props.user_email}
           shopping_list_id={list}
           getAllShoppingListsOfUser={this.getAllShoppingListsOfUser}
           enterSingleShoppingList={this.enterSingleShoppingList}
@@ -143,8 +143,8 @@ export class AllShoppingLists extends Component {
               >
                 <DialogContent>
                   <AddShoppingListForm
-                    user_name={TEMP_NAME}
-                    user_email={TEMP_EMAIL}
+                    user_name={this.props.user_name}
+                    user_email={this.props.user_email}
                     getAllShoppingListsOfUser={this.getAllShoppingListsOfUser}
                     closeDialog={this.closeAddShoppingListDialog}
                   />

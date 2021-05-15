@@ -12,7 +12,7 @@ export class Dashboard extends Component {
   render() {
     return (
       <div>
-        <AllShoppingLists />
+        <AllShoppingLists {...this.props} />
       </div>
     );
   }

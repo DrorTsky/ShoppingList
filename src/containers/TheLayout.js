@@ -7,13 +7,19 @@ export class TheLayout extends Component {
     super(props);
 
     this.state = {
-      isLoggedIn: true,
+      isLoggedIn: false,
+      user_name: "",
+      user_email: "",
     };
     this.isLoggedInCheck = this.isLoggedInCheck.bind(this);
   }
 
-  isLoggedInCheck = async (phoneNumber) => {
-    console.log("checking user");
+  isLoggedInCheck = (user_name, user_email) => {
+    this.setState({
+      isLoggedIn: true,
+      user_name: user_name,
+      user_email: user_email,
+    });
   };
 
   render() {
@@ -24,7 +30,10 @@ export class TheLayout extends Component {
         <div className="c-wrapper">
           <TheHeader />
           <div className="c-body">
-            <TheContent />
+            <TheContent
+              user_name={this.state.user_name}
+              user_email={this.state.user_email}
+            />
           </div>
           <TheFooter />
         </div>
