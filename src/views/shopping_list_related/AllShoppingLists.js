@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { CLink, CCard, CCardHeader, CCardBody } from "@coreui/react";
 import AddIcon from "@material-ui/icons/Add";
 import ShoppingListService from "../dashboard/ShoppingListService";
-import ItemService from "../dashboard/ItemService";
+import ShoppingList from "./ShoppingList";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import AddNewItemForm from "../forms/AddNewItemForm";
+import AddShoppingListForm from "../forms/AddShoppingListForm";
+import ShoppingListInfo from "./ShoppingListInfo";
 
 const TEMP_NAME = "dror";
 const TEMP_EMAIL = "dror@gmail.com";
@@ -13,84 +18,146 @@ export class AllShoppingLists extends Component {
 
     this.state = {
       shopping_lists: [],
+      open_add_shopping_list_dialog: false,
+      isSelected: false,
+      shopping_list_props: {},
     };
     this.getAllShoppingListsOfUser = this.getAllShoppingListsOfUser.bind(this);
-    this.getShoppingListsInfo = this.getShoppingListsInfo.bind(this);
+    this.closeAddShoppingListDialog =
+      this.closeAddShoppingListDialog.bind(this);
+    this.openAddShoppingListDialog = this.openAddShoppingListDialog.bind(this);
+    this.enterSingleShoppingList = this.enterSingleShoppingList.bind(this);
+    this.returnToAllShoppingLists = this.returnToAllShoppingLists.bind(this);
+  }
+
+  enterSingleShoppingList(propsFromList) {
+    this.setState({
+      isSelected: true,
+      shopping_list_props: propsFromList,
+    });
+  }
+
+  returnToAllShoppingLists() {
+    this.setState({
+      isSelected: false,
+    });
   }
 
   async componentDidMount() {
-    let data = (
-      await ShoppingListService.getAllShoppingListsOfUser(TEMP_NAME, TEMP_EMAIL)
-    ).data;
+    this.getAllShoppingListsOfUser();
+  }
+
+  closeAddShoppingListDialog() {
     this.setState({
-      shopping_lists: data,
+      open_add_shopping_list_dialog: false,
     });
-    console.log(this.state.shopping_lists);
+  }
+  openAddShoppingListDialog() {
+    this.setState({
+      open_add_shopping_list_dialog: true,
+    });
   }
 
   // gets items from shopping list
-  async getShoppingListsInfo() {
-    this.state.shopping_lists.forEach(async (list) => {
-      const all_items_array = (
-        await ItemService.getAllItemFromShoppingList(
-          TEMP_NAME,
-          TEMP_EMAIL,
-          list
-        )
-      ).data;
-      all_items_array.forEach((item) => {
-        console.log(item);
-      });
-    });
-  }
+  // async getShoppingListsItems() {
+  //   this.state.shopping_lists.forEach(async (list) => {
+  //     const all_items_array = (
+  //       await ItemService.getAllItemFromShoppingList(
+  //         TEMP_NAME,
+  //         TEMP_EMAIL,
+  //         list
+  //       )
+  //     ).data;
+  //     all_items_array.forEach((item) => {
+  //       console.log(item);
+  //     });
+  //   });
+  // }
 
-  //get single item from shopping list
-  async getSingleItemFromShoppingList() {
-    const item_name = "milk";
-    const list = "7d556769-bc93-47fe-be64-79e9f2acf87d";
-    const item = (
-      await ItemService.getSingleItemFromShoppingList(
-        TEMP_NAME,
-        TEMP_EMAIL,
-        list,
-        item_name
-      )
-    ).data;
-    console.log(item);
-  }
+  // //get single item from shopping list
+  // async getSingleItemFromShoppingList() {
+  //   const item_name = "milk";
+  //   const list = "7d556769-bc93-47fe-be64-79e9f2acf87d";
+  //   const item = (
+  //     await ItemService.getSingleItemFromShoppingList(
+  //       TEMP_NAME,
+  //       TEMP_EMAIL,
+  //       list,
+  //       item_name
+  //     )
+  //   ).data;
+  //   console.log(item);
+  // }
 
   async getAllShoppingListsOfUser() {
-    console.log(
-      (
-        await ShoppingListService.getAllShoppingListsOfUser(
-          TEMP_NAME,
-          TEMP_EMAIL
-        )
-      ).data
-    );
-    // console.log((await ShoppingListService.getString()).data);
+    console.log("getting lists");
+    let data = (
+      await ShoppingListService.getAllShoppingListsOfUser(TEMP_NAME, TEMP_EMAIL)
+    ).data;
+    console.log(data);
+    this.setState({
+      shopping_lists: data,
+    });
   }
   render() {
     const all_shopping_lists = [];
+    console.log(this.state.shopping_lists);
+    this.state.shopping_lists.forEach(async (list) => {
+      // console.log(`list: ${list}`);
+      all_shopping_lists.push(
+        <ShoppingList
+          key={list}
+          user_name={TEMP_NAME}
+          email={TEMP_EMAIL}
+          shopping_list_id={list}
+          getAllShoppingListsOfUser={this.getAllShoppingListsOfUser}
+          enterSingleShoppingList={this.enterSingleShoppingList}
+        />
+      );
+    });
 
-    return (
-      <div>
+    const page_display = [];
+    if (!this.state.isSelected) {
+      page_display.push(
         <CCard>
           <CCardHeader>
             All Shopping Lists
             <div className="card-header-actions">
               <CLink
                 className="card-header-action"
-                onClick={this.getSingleItemFromShoppingList}
+                onClick={this.openAddShoppingListDialog}
               >
                 <AddIcon />
               </CLink>
+              <Dialog
+                open={this.state.open_add_shopping_list_dialog}
+                onClose={this.closeAddShoppingListDialog}
+                aria-labelledby="form-dialog-title"
+              >
+                <DialogContent>
+                  <AddShoppingListForm
+                    user_name={TEMP_NAME}
+                    user_email={TEMP_EMAIL}
+                    getAllShoppingListsOfUser={this.getAllShoppingListsOfUser}
+                    closeDialog={this.closeAddShoppingListDialog}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
           </CCardHeader>
-          <CCardBody></CCardBody>
+          <CCardBody>{all_shopping_lists}</CCardBody>
         </CCard>
-      </div>
-    );
+      );
+    } else {
+      page_display.push(
+        <ShoppingListInfo
+          {...this.state.shopping_list_props}
+          goToMain={this.returnToAllShoppingLists}
+        />
+      );
+    }
+
+    return <div>{page_display} </div>;
   }
 }
 
