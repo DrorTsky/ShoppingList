@@ -12,6 +12,18 @@ class ShoppingListService {
     });
   }
 
+  getShoppingListInfo(user_name, user_email, shopping_list_id) {
+    console.log(`getting shopping list ${shopping_list_id} details`);
+    return axios.get(
+      BASE +
+        SHOPPING_LISTS_URL +
+        `${user_name}/${user_email}/${shopping_list_id}`,
+      {
+        responseType: "json",
+      }
+    );
+  }
+
   async createShoppingList(user_name, user_email, shopping_list_details) {
     console.log(`creating a single shopping list`);
     await axios
@@ -20,11 +32,11 @@ class ShoppingListService {
         shopping_list_details
       )
       .then((response) => {
-        alert(`created shopping list ${shopping_list_details}`);
+        console.log(`created shopping list ${shopping_list_details}`);
         console.log(response);
       })
       .catch((error) => {
-        alert(`failed to create shopping list ${shopping_list_details}`);
+        console.log(`failed to create shopping list ${shopping_list_details}`);
         console.log(error);
       });
   }
@@ -38,22 +50,41 @@ class ShoppingListService {
           `${user_name}/${user_email}/${shopping_list_id}`
       )
       .then((response) => {
-        alert(`${user_name} added`);
-        console.log(response);
+        console.log(`${user_name} added`);
+        console.log(response.data);
+        return response.data;
       })
       .catch((error) => {
-        alert(`failed to add user ${user_name}`);
+        console.log(`failed to add user ${user_name}`);
         console.log(error);
+        return false;
       });
   }
 
   deleteSingleShoppingList(user_name, user_email, shopping_list_id) {
     console.log(`deleting shopping list ${shopping_list_id}`);
-    return axios.delete(
-      BASE +
-        SHOPPING_LISTS_URL +
-        `${user_name}/${user_email}/${shopping_list_id}`
-    );
+    return axios
+      .delete(
+        BASE +
+          SHOPPING_LISTS_URL +
+          `${user_name}/${user_email}/${shopping_list_id}`,
+        {
+          header: "Access-Control-Allow-Origin",
+        },
+        {
+          responseType: "json",
+        }
+      )
+      .then((response) => {
+        console.log(`${user_name} added`);
+        console.log(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(`failed to add user ${user_name}`);
+        console.log(error);
+        return false;
+      });
   }
 }
 
