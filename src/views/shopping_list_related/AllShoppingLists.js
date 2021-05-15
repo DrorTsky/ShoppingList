@@ -91,13 +91,20 @@ export class AllShoppingLists extends Component {
 
   async getAllShoppingListsOfUser() {
     console.log("getting lists");
-    let data = (
-      await ShoppingListService.getAllShoppingListsOfUser(TEMP_NAME, TEMP_EMAIL)
-    ).data;
-    console.log(data);
-    this.setState({
-      shopping_lists: data,
-    });
+    try {
+      let data = await ShoppingListService.getAllShoppingListsOfUser(
+        TEMP_NAME,
+        TEMP_EMAIL
+      );
+      console.log(data.data);
+      this.setState({
+        shopping_lists: data.data,
+      });
+    } catch {
+      this.setState({
+        shopping_lists: [],
+      });
+    }
   }
   render() {
     const all_shopping_lists = [];
