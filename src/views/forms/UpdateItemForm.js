@@ -153,11 +153,11 @@ export class UpdateItemForm extends Component {
           </CCardBody>
           <CCardFooter className="footer_contract_list_element align_center">
             <CButton
-              type="submit"
               size="sm"
               color="success"
               className="buttons_inside_contract_list"
               onClick={this.addItemFormSubmit}
+              {...(this.state.name === "" ? { disabled: true } : {})}
             >
               <CIcon name="cil-scrubber" /> Submit
             </CButton>

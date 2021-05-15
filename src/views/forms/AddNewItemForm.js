@@ -139,6 +139,7 @@ export class AddNewItemForm extends Component {
               size="sm"
               color="success"
               className="buttons_inside_contract_list"
+              {...(this.state.name === "" ? { disabled: true } : {})}
               onClick={this.addItemFormSubmit}
             >
               <CIcon name="cil-scrubber" /> Submit
