@@ -91,9 +91,7 @@ export class Login extends Component {
                           </CInputGroup>
                           <CInputGroup className="mb-4">
                             <CInputGroupPrepend>
-                              <CInputGroupText>
-                                <CIcon name="cil-envelope-closed" />
-                              </CInputGroupText>
+                              <CInputGroupText>@</CInputGroupText>
                             </CInputGroupPrepend>
                             <CInput
                               type="email"
