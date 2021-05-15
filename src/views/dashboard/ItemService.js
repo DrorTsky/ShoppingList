@@ -49,16 +49,23 @@ class ItemService {
         item_details
       )
       .then((response) => {
-        alert(
+        console.log(
           `created item ${item_details} in shopping list ${shopping_list_id}`
         );
         console.log(response);
       })
       .catch((error) => {
-        alert(
+        console.log(
           `failed to create item ${item_details} in shopping list ${shopping_list_id}`
         );
         console.log(error);
+        if (error.response) {
+          console.log(error.response);
+        } else if (error.request) {
+          console.log(error.request);
+        } else if (error.message) {
+          console.log(error.message);
+        }
       });
   }
 
@@ -79,11 +86,11 @@ class ItemService {
         item_details
       )
       .then((response) => {
-        alert(`${item_name} updated`);
+        console.log(`${item_name} updated`);
         console.log(response);
       })
       .catch((error) => {
-        alert(`failed to update ${item_name}`);
+        console.log(`failed to update ${item_name}`);
         console.log(error);
       });
   }
@@ -94,7 +101,10 @@ class ItemService {
     return axios.delete(
       BASE +
         ITEMS_URL +
-        `${user_name}/${user_email}/${shopping_list_id}/${item_name}`
+        `${user_name}/${user_email}/${shopping_list_id}/${item_name}`,
+      {
+        header: "Access-Control-Allow-Origin",
+      }
     );
   }
 }
